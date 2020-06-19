@@ -1,2 +1,2 @@
 # ZipStore
-The Store for ZIP and other
+The Store for ZIP and others
