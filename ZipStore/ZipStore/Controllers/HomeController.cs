@@ -10,20 +10,20 @@ namespace ZipStore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly string conStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Projects\ASP.NET\ZipStore\ZipStore\ZipStore\App_Data\zipstore_db.mdf;Integrated Security=True";
-
+        //private readonly string conStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\zipstore_db.mdf;Integrated Security=True";
+                    //    connectionString= "Data Source=(LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-owinTest-20140519094353.mdf;Initial Catalog=aspnet-owinTest-20140519094353;Integrated Security=True" providerName="System.Data.SqlClient" />
         public ActionResult Index()
         {
-            DataTable ZipList = new DataTable();
-            using (SqlConnection sqlCon = new SqlConnection(conStr))
-            {
-                sqlCon.Open();
-                SqlDataAdapter sqlData = new SqlDataAdapter(
-                    "SELECT s.Id, s.Vendor, s.Number, s.SearchVendor, s.SearchNumber, s.Description, s.Price, s.Count FROM zipItem s", sqlCon);
-                sqlData.Fill(ZipList);
-                sqlCon.Close();
-            }
-            return View(ZipList);
+            /*   DataTable ZipList = new DataTable();
+              using (SqlConnection sqlCon = new SqlConnection(conStr))
+              {
+                  sqlCon.Open();
+                  SqlDataAdapter sqlData = new SqlDataAdapter(
+                      "SELECT s.Id, s.Vendor, s.Number, s.SearchVendor, s.SearchNumber, s.Description, s.Price, s.Count FROM zipItem s", sqlCon);
+                  sqlData.Fill(ZipList);
+                  sqlCon.Close();
+              }*/
+            return View(); // ZipList);
         }
 
         public ActionResult About()
