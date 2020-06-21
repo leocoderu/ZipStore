@@ -43,7 +43,7 @@ namespace ZipStore.Entities
         [Required]
         [Display(Name = "Цена")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Please enter a positive price")]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         
         [Required]
         [Display(Name = "Количество")]
