@@ -42,7 +42,8 @@ namespace ZipStore.Entities
         
         [Required]
         [Display(Name = "Цена")]
-        public float Price { get; set; }
+        [Range(0.01, double.MaxValue, ErrorMessage = "Please enter a positive price")]
+        public double Price { get; set; }
         
         [Required]
         [Display(Name = "Количество")]

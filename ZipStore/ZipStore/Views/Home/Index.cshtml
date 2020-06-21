@@ -1,4 +1,4 @@
-﻿@model System.Data.DataTable 
+﻿@model IEnumerable<ZipStore.Entities.ZipItem>
 
 @{
     ViewBag.Title = "Home Page";
@@ -18,17 +18,17 @@
             <tr><th>ID</th><th>Производитель</th><th>Номер запчасти</th><th>Производитель для поиска</th><th>Номер для поиска</th><th>Наименование</th><th>Цена</th><th>Количество</th></tr>
         </thead>
         <tbody>
-            @for (int i = 0; i < 10; i++) // Model.Rows.Count; i++)
+            @foreach(var item in Model)
             {
                 <tr>
-                    <td>Model.Rows[i][0]</td>
-                    <td>Model.Rows[i][1]</td>
-                    <td>Model.Rows[i][2]</td>
-                    <td>Model.Rows[i][3]</td>
-                    <td>Model.Rows[i][4]</td>
-                    <td>Model.Rows[i][5]</td>
-                    <td>Model.Rows[i][6]</td>
-                    <td>Model.Rows[i][7]</td> 
+                    <td>@item.Id</td>
+                    <td>@item.Vendor</td>
+                    <td>@item.Number</td>
+                    <td>@item.SearchVendor</td>
+                    <td>@item.SearchNumber</td>
+                    <td>@item.Description</td>
+                    <td>@item.Price</td>
+                    <td>@item.Count</td> 
                 </tr>
             }
         </tbody>
