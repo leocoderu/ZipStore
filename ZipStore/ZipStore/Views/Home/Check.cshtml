@@ -1,0 +1,23 @@
+﻿@model List<MimeKit.MimeEntity>
+
+@{
+    ViewBag.Title = "Check";
+}
+
+<h2>Check</h2>
+<table>
+    <thead>
+        <tr>
+            <td>Files List</td>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var s in Model)
+        {
+            <tr><td>Size: @s.ContentDisposition.Size</td></tr>
+            <tr><td>FileName: @s.ContentDisposition.FileName</td></tr>
+            <tr><td>Date: @s.ContentDisposition.CreationDate</td></tr>
+        }
+    </tbody>
+</table>
