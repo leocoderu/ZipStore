@@ -16,6 +16,7 @@ using MimeKit;
 using System.Xml.Schema;
 using System.Xml;
 using Microsoft.VisualBasic.FileIO;
+using System.Text.RegularExpressions;
 
 namespace ZipStore.Controllers
 {
@@ -140,15 +141,40 @@ namespace ZipStore.Controllers
                          where myZip.Field<string>("Бренд") == "555"
                          select myZip;
 
-                //string querySelect = "Select Vendor, Number FROM ZipItems";
+                IEnumerable<string> fldVendor = from p in xmlData.AsEnumerable()
+                                                where p.Field<string>("FIELD") == "Vendor"
+                                                select p.Field<string>("SOURCE");
+                IEnumerable<string> fldNumber = from p in xmlData.AsEnumerable()
+                                                where p.Field<string>("FIELD") == "Number"
+                                                select p.Field<string>("SOURCE");
+                IEnumerable<string> fldDescription = from p in xmlData.AsEnumerable()
+                                                where p.Field<string>("FIELD") == "Description"
+                                                select p.Field<string>("SOURCE");
+                IEnumerable<string> fldPrice = from p in xmlData.AsEnumerable()
+                                                where p.Field<string>("FIELD") == "Price"
+                                                select p.Field<string>("SOURCE");
+                IEnumerable<string> fldCount = from p in xmlData.AsEnumerable()
+                                                where p.Field<string>("FIELD") == "Count"
+                                                select p.Field<string>("SOURCE");
+
+                foreach (DataRow row in csvData.Rows)
+                {
+                    string vendor = row.Field<string>(fldVendor.First());
+                    string number = row.Field<string>(fldNumber.First());
+                    string schVendor = Regex.Match(row.Field<string>(fldVendor.First()), @"^[A-Za-zА-Яа-я0-9]+$").Value.ToUpper();
+                    string schNumber = Regex.Match(row.Field<string>(fldNumber.First()), @"^[A-Za-zА-Яа-я0-9]+$").Value.ToUpper();
+                    string description = row.Field<string>(fldDescription.First());
+                    string strPrice = row.Field<string>(fldPrice.First()).Replace(",", ".");
+                    int count = Convert.ToInt32(Regex.Match(row.Field<string>(fldCount.First()), @"[0-9]+$").Value);
+                    
+
+                    string query = $"INSERT INTO ZipItems (Vendor, Number, SearchVendor, SearchNumber, Description, Price, Count) VALUES ('{vendor}', '{number}', '{schVendor}', '{schNumber}', '{description}', {strPrice}, {count})";
+                    int qan = dbContext.Database.ExecuteSqlCommand(query);
+                }
                 
-                string query = $"INSERT INTO ZipItems (Vendor) SELECT 'Бренд' FROM {csvData}";
                 //"INSERT INTO ZipItems (Vendor, Number, Description, Price, Count) VALUES (@vendor, 'SA-1712L', '666', 'SA1712L', 'Рычаг подвески | перед лев |', '1343', '2')";
-                //query.Para
-                int qan = dbContext.Database.ExecuteSqlCommand(query);
-                
-                //TODO: SearchVendor и SearchNumber привести с помощью регулятных выражений к соответствующему виду
-                
+                //int qan = dbContext.Database.ExecuteSqlCommand(query);
+               
                 dbContext.Dispose();
             }
 
@@ -177,7 +203,7 @@ namespace ZipStore.Controllers
                         string[] fieldData = csvReader.ReadFields();
                         //Fill empty value as null
                         for (int i = 0; i < fieldData.Length; i++)
-                          if (fieldData[i] == "") fieldData[i] = null;
+                          if (fieldData[i] == "") fieldData[i] = "NULL";
                         csvData.Rows.Add(fieldData);
                     }
                 }
