@@ -62,6 +62,7 @@
       <HintPath>..\packages\MailKit.2.7.0\lib\net48\MailKit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MimeKit, Version=2.8.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\packages\MimeKit.2.8.0\lib\net48\MimeKit.dll</HintPath>
     </Reference>

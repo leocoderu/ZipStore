@@ -1,21 +1,28 @@
-<?xml version="1.0"?>
-<BCPFORMAT xmlns="https://schemas.microsoft.com/sqlserver/2004/bulkload/format" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="utf-8" ?>
+<ZIPCONFIG>
 	<RECORD>
-		<FIELD ID="2" xsi:type="CharTerm" TERMINATOR=";" MAX_LENGTH="64"/>
-		<FIELD ID="11" xsi:type="CharTerm" TERMINATOR=";" MAX_LENGTH="64"/> 
-		<FIELD ID="2" xsi:type="CharTerm" TERMINATOR=";" MAX_LENGTH="64"/> 
-		<FIELD ID="11" xsi:type="CharTerm" TERMINATOR=";" MAX_LENGTH="64"/> 
-		<FIELD ID="4" xsi:type="CharTerm" TERMINATOR=";" MAX_LENGTH="512"/> 
-		<FIELD ID="7" xsi:type="CharTerm" TERMINATOR=";" MAX_LENGTH="64"/> 
-		<FIELD ID="9" xsi:type="CharTerm" TERMINATOR="\r\n" MAX_LENGTH="7"/> 
+		<SOURCE>Бренд</SOURCE>
+		<FIELD>Vendor</FIELD>
+		<FORMAT></FORMAT>
 	</RECORD> 
-	<ROW>
-		<COLUMN SOURCE="1" NAME="Vendor" xsi:type="SQLVARYCHAR"/>
-		<COLUMN SOURCE="2" NAME="Number" xsi:type="SQLVARYCHAR"/>
-		<COLUMN SOURCE="3" NAME="SearchVendor" xsi:type="SQLVARYCHAR"/>
-		<COLUMN SOURCE="4" NAME="SearchNumber" xsi:type="SQLVARYCHAR"/>
-		<COLUMN SOURCE="5" NAME="Description" xsi:type="SQLVARYCHAR"/>
-		<COLUMN SOURCE="6" NAME="Price" xsi:type="SQLVARYCHAR"/>
-		<COLUMN SOURCE="7" NAME="Count" xsi:type="SQLSMALLINT"/>		
-	</ROW> 
-</BCPFORMAT>
+	<RECORD>
+		<SOURCE>Каталожный номер</SOURCE>
+		<FIELD>Number</FIELD>
+		<FORMAT></FORMAT>
+	</RECORD> 
+	<RECORD>
+		<SOURCE>Описание</SOURCE>
+		<FIELD>Description</FIELD>
+		<FORMAT></FORMAT>
+	</RECORD> 
+	<RECORD>
+		<SOURCE>Цена, руб.</SOURCE>
+		<FIELD>Price</FIELD>
+		<FORMAT></FORMAT>
+	</RECORD> 
+	<RECORD>
+		<SOURCE>Наличие</SOURCE>
+		<FIELD>Count</FIELD>
+		<FORMAT></FORMAT>
+	</RECORD>
+</ZIPCONFIG>

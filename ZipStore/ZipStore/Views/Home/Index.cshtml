@@ -18,7 +18,7 @@
             <tr><th>ID</th><th>Производитель</th><th>Номер запчасти</th><th>Производитель для поиска</th><th>Номер для поиска</th><th>Наименование</th><th>Цена</th><th>Количество</th></tr>
         </thead>
         <tbody>
-            @foreach(var item in Model.ZipItems)
+            @foreach (var item in Model.ZipItems)
             {
                 <tr>
                     <td>@item.Id</td>
@@ -28,9 +28,10 @@
                     <td>@item.SearchNumber</td>
                     <td>@item.Description</td>
                     <td>@item.Price</td>
-                    <td>@item.Count</td> 
+                    <td>@item.Count</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+

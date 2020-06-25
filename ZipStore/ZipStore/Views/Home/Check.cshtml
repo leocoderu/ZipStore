@@ -12,12 +12,33 @@
         </tr>
     </thead>
     <tbody>
-
         @foreach (var s in Model)
         {
             <tr><td>Size: @s.ContentDisposition.Size</td></tr>
             <tr><td>FileName: @s.ContentDisposition.FileName</td></tr>
             <tr><td>Date: @s.ContentDisposition.CreationDate</td></tr>
+        }
+    </tbody>
+</table>
+<table>
+    <thead>
+        <tr>
+            @foreach (var column in ViewBag.Table.Columns)
+            {
+                <td>@column.ColumnName</td>
+            }
+            </tr>
+        </thead>
+    <tbody>
+        @foreach (var row in ViewBag.Table.Rows)
+        {
+            <tr>
+                @{var cells = row.ItemArray; }
+                @foreach (object cell in cells)
+                {
+                    <td>@cell</td>
+                }
+            </tr>
         }
     </tbody>
 </table>

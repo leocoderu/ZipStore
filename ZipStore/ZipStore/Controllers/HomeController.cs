@@ -13,6 +13,9 @@ using MailKit;
 using MailKit.Net.Imap;
 using System.IO;
 using MimeKit;
+using System.Xml.Schema;
+using System.Xml;
+using Microsoft.VisualBasic.FileIO;
 
 namespace ZipStore.Controllers
 {
@@ -46,7 +49,7 @@ namespace ZipStore.Controllers
             EFDBContext context = new EFDBContext();
             ZipListViewModel viewModel = new ZipListViewModel { ZipItems = context.ZipItems };
             
-            return View(viewModel);
+            return View(viewModel); 
         }
 
         [Obsolete]
@@ -79,36 +82,113 @@ namespace ZipStore.Controllers
 
                             if (extension == "csv")
                             {
-                                var stream = System.IO.File.Create("/Import/"+f.ContentDisposition.FileName);
+                                
+                                // Load file to server in Import derectory 
+                                FileStream stream = System.IO.File.Create(Server.MapPath("~/Import/")+f.ContentDisposition.FileName);
                                 MimePart part = (MimePart)f;
                                 part.ContentObject.DecodeTo(stream);
                                 stream.Close();
+
+                                ViewBag.Message = SaveToBaseCSV(Server.MapPath("~/Import/") + f.ContentDisposition.FileName, Server.MapPath("~/Schemes/") + "scheme.xml");
 
                                 //TODO: BULK INSERT with schemas from Stream to DB
                                 // ATTENTION!!!! Before insert Data to DB, Data must check on SQL Injection script!!!
                                 // ATTENTION!!!! Before insert Data to DB, Data must check on SQL Injection script!!!
                                 // ATTENTION!!!! Before insert Data to DB, Data must check on SQL Injection script!!!
-                                using (EFDBContext dbContext = new EFDBContext())
+/*                                using (EFDBContext dbContext = new EFDBContext())
                                 {
+                                    //dbContext.ZipItems = ReadCSV
                                     //string query = "INSERT INTO ZipItems (Vendor, Number, SearchVendor, SearchNumber, Description, Price, Count) VALUES ('666', 'SA-1712L', '666', 'SA1712L', 'Рычаг подвески | перед лев |', '1343', '2')";
-                                    string query = $"BULK INSERT ZipItems FROM '/Import/{f.ContentDisposition.FileName}'" +
-                                                   $"WITH ( FORMATFILE='~/Schemes/scheme.xml', FIRSTROW = 2, FIELDTERMINATOR = ';', ROWTERMINATOR = '\n', ERRORFILE = 'ErrorRows.csv', TABLOCK)";
+                                    string query = $"BULK INSERT ZipItems FROM '{Server.MapPath("~/Import/") + f.ContentDisposition.FileName}'" +
+                                                   $"WITH (FORMATFILE='{Server.MapPath("~/Schemes/")}scheme.xml', FIRSTROW = 2, FIELDTERMINATOR = ';', ROWTERMINATOR = '\n', CODEPAGE ='OEM', KEEPNULLS, ERRORFILE = '{Server.MapPath("~/Import/")}ErrorRows.csv', TABLOCK)";   
                                     int qan = dbContext.Database.ExecuteSqlCommand(query);
+                                    dbContext.Dispose();
                                 }
+*/                                                      
+                                // Save to base throw entity datebase
+                                /*using (var db = new EFDBContext())
+                                {
+                                    var zip = new ZipItem { Vendor = "555", Number = "SA-1712L", SearchVendor = "555", SearchNumber = "SA1712L", Description = "Рычаг подвески | перед лев |", Price = 1343, Count = 2 };
+                                    db.ZipItems.Add(zip);
+                                    db.SaveChanges();
+                                }*/
                             }
                         }
                     }
                 }
                 imap.Disconnect(true);
             }
-
-            /*using (var db = new EFDBContext())
-            {
-                var zip = new ZipItem { Vendor = "555", Number = "SA-1712L", SearchVendor = "555", SearchNumber = "SA1712L", Description = "Рычаг подвески | перед лев |", Price = 1343, Count = 2 };
-                db.ZipItems.Add(zip);
-                db.SaveChanges();
-            }*/
             return View(lst);
+        }
+
+        private List<string> SaveToBaseCSV(string nameCSV, string nameConfig)
+        {
+            // Load Data from csv file
+            List<string> str = new List<string>();
+            DataTable csvData = GetDataCSV(nameCSV);
+
+            // Load config from xml file
+            DataSet ds = new DataSet();
+            ds.ReadXml(nameConfig);
+            DataTable xmlData = new DataTable();
+            xmlData = ds.Tables[0];
+
+            // ReLoad Data from csv table to DB by field from xml config file
+            using (EFDBContext dbContext = new EFDBContext())
+            {
+                var st = from myZip in csvData.AsEnumerable()
+                         where myZip.Field<string>("Бренд") == "555"
+                         select myZip;
+
+                //string querySelect = "Select Vendor, Number FROM ZipItems";
+                
+                string query = $"INSERT INTO ZipItems (Vendor) SELECT 'Бренд' FROM {csvData}";
+                //"INSERT INTO ZipItems (Vendor, Number, Description, Price, Count) VALUES (@vendor, 'SA-1712L', '666', 'SA1712L', 'Рычаг подвески | перед лев |', '1343', '2')";
+                //query.Para
+                int qan = dbContext.Database.ExecuteSqlCommand(query);
+                
+                //TODO: SearchVendor и SearchNumber привести с помощью регулятных выражений к соответствующему виду
+                
+                dbContext.Dispose();
+            }
+
+            ViewBag.Table = xmlData;
+            return str;
+        }
+
+        private static DataTable GetDataCSV(string csvFilePath)
+        {
+            DataTable csvData = new DataTable();
+            try
+            {
+                using (TextFieldParser csvReader = new TextFieldParser(csvFilePath))
+                {
+                    csvReader.SetDelimiters(new string[] { ";" });
+                    csvReader.HasFieldsEnclosedInQuotes = true;
+                    string[] colFields = csvReader.ReadFields();
+                    foreach (string column in colFields)
+                    {
+                        DataColumn datecolumn = new DataColumn(column);
+                        datecolumn.AllowDBNull = true;
+                        csvData.Columns.Add(datecolumn);
+                    }
+                    while (!csvReader.EndOfData)
+                    {
+                        string[] fieldData = csvReader.ReadFields();
+                        //Fill empty value as null
+                        for (int i = 0; i < fieldData.Length; i++)
+                          if (fieldData[i] == "") fieldData[i] = null;
+                        csvData.Rows.Add(fieldData);
+                    }
+                }
+            }
+            catch (Exception) {}
+            return csvData;
+        }
+
+        private static void GetConfigXML(string xmlFilePath)
+        {
+
         }
 
 
