@@ -168,7 +168,7 @@ namespace ZipStore.Controllers
                     int count = Convert.ToInt32(Regex.Match(row.Field<string>(fldCount.First()), @"[0-9]+$").Value);
                     
 
-                    string query = $"INSERT INTO ZipItems (Vendor, Number, SearchVendor, SearchNumber, Description, Price, Count) VALUES ('{vendor}', '{number}', '{schVendor}', '{schNumber}', '{description}', {strPrice}, {count})";
+                    string query = $"INSERT INTO ZipItems (Vendor, Number, SearchVendor, SearchNumber, Description, Price, Count) VALUES (N'{vendor}', N'{number}', N'{schVendor}', N'{schNumber}', N'{description}', {strPrice}, {count})";
                     int qan = dbContext.Database.ExecuteSqlCommand(query);
                 }
                 
