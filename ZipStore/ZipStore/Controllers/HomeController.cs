@@ -161,8 +161,8 @@ namespace ZipStore.Controllers
                 {
                     string vendor = row.Field<string>(fldVendor.First());
                     string number = row.Field<string>(fldNumber.First());
-                    string schVendor = Regex.Match(row.Field<string>(fldVendor.First()), @"^[A-Za-zА-Яа-я0-9]+$").Value.ToUpper();
-                    string schNumber = Regex.Match(row.Field<string>(fldNumber.First()), @"^[A-Za-zА-Яа-я0-9]+$").Value.ToUpper();
+                    string schVendor = Regex.Replace(row.Field<string>(fldVendor.First()), @"[^A-Za-zА-Яа-я0-9]+", "").ToUpper();
+                    string schNumber = Regex.Replace(row.Field<string>(fldNumber.First()), @"[^A-Za-zА-Яа-я0-9]+", "").ToUpper();
                     string description = row.Field<string>(fldDescription.First());
                     string strPrice = row.Field<string>(fldPrice.First()).Replace(",", ".");
                     int count = Convert.ToInt32(Regex.Match(row.Field<string>(fldCount.First()), @"[0-9]+$").Value);
